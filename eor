@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 
+: "${WATCH_OPTS:=""}"
+
 echo "Running make..."
-make 2>&1 | cat 2>&1 >/tmp/before.txt
+make "$@" >/tmp/eor-$$-before.txt 2>&1
 echo "Output of make:"
 
-cat /tmp/before.txt
+cat /tmp/eor-$$-before.txt
 read -p "Continue? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	cp /tmp/before.txt /tmp/after.txt
-
-	sleep 1 && find -L . | entr sh -c 'make 2>&1 | cat 2>&1 >/tmp/after.txt' &
-
-	watch --color 'diff /tmp/before.txt /tmp/after.txt --unified | colordiff'
+	cp /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt
+    
+	(sleep 1 && find -L . | entr sh -c "make $* > /tmp/eor-$$-after.txt 2>&1") &
+   # shellcheck disable=SC2068
+	watch ${WATCH_OPTS[@]} --color "diff /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt --unified | colordiff"
+	kill -TERM %1
 fi
