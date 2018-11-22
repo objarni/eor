@@ -3,17 +3,18 @@
 : "${WATCH_OPTS:=""}"
 
 echo "Running make..."
-make "$@" >/tmp/before.txt 2>&1
+make "$@" >/tmp/eor-$$-before.txt 2>&1
 echo "Output of make:"
 
-cat /tmp/before.txt
+cat /tmp/eor-$$-before.txt
 read -p "Continue? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	cp /tmp/before.txt /tmp/after.txt
+	cp /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt
     
-	(sleep 1 && find -L . | entr sh -c "make $* > /tmp/after.txt 2>&1") &
-	watch "${WATCH_OPTS[@]}" --color 'diff /tmp/before.txt /tmp/after.txt --unified | colordiff'
+	(sleep 1 && find -L . | entr sh -c "make $* > /tmp/eor-$$-after.txt 2>&1") &
+   # shellcheck disable=SC2068
+	watch ${WATCH_OPTS[@]} --color "diff /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt --unified | colordiff"
 	kill -TERM %1
 fi
