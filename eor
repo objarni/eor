@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+echo "Running make..."
+make 2>&1 | cat 2>&1 >/tmp/before.txt
+echo "Output of make:"
+
+cat /tmp/before.txt
+read -p "Continue? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	cp /tmp/before.txt /tmp/after.txt
+
+	sleep 1 && find -L . | entr sh -c 'make 2>&1 | cat 2>&1 >/tmp/after.txt' &
+
+	watch --color 'diff /tmp/before.txt /tmp/after.txt --unified | colordiff'
+fi
