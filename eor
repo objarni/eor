@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-set -x
-
-: ${WATCH_OPTS:=""}
+: "${WATCH_OPTS:=""}"
 
 echo "Running make..."
-make $1 >/tmp/before.txt 2>&1
+make "$@" >/tmp/before.txt 2>&1
 echo "Output of make:"
 
 cat /tmp/before.txt
@@ -15,7 +13,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
 	cp /tmp/before.txt /tmp/after.txt
     
-	(sleep 1 && find -L . | entr sh -c "make $1 > /tmp/after.txt 2>&1") &
-	watch ${WATCH_OPTS} --color 'diff /tmp/before.txt /tmp/after.txt --unified | colordiff'
-	kill -TERM %1 # -$WPID >/dev/null 2>&1 || true
+	(sleep 1 && find -L . | entr sh -c "make $* > /tmp/after.txt 2>&1") &
+	watch "${WATCH_OPTS[@]}" --color 'diff /tmp/before.txt /tmp/after.txt --unified | colordiff'
+	kill -TERM %1
 fi

@@ -5,3 +5,4 @@ install-deps:
 
 tests:
 	shellcheck -s bash eor
+	make -C test
