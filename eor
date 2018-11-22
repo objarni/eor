@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-GREEN='\033[1;34m'
+LIGHTBLUE='\033[1;34m'
 BACK='\033[0m'
 SPLASH="""
                         ,,.                                  .
@@ -35,7 +35,7 @@ SPLASH="""
                                       ,(#####(///***/*.       
                                        .,**,,,,,*/*..         
 """
-printf "${GREEN}"
+printf "${LIGHTBLUE}"
 printf "${SPLASH}"
 printf "${BACK}"
 
