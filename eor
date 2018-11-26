@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+PATTERN=$2
+if [ "$PATTERN" = "" ]; then
+  PATTERN="."
+fi
+
 LIGHTBLUE='\033[1;34m'
 BACK='\033[0m'
 SPLASH="""
@@ -46,18 +51,27 @@ printf "I ${RED}love${NC} Stack Overflow\n"
 : "${WATCH_OPTS:=""}"
 
 echo "Running make..."
-make "$@" >/tmp/eor-$$-before.txt 2>&1
+
+CMDLINE_TEMPLATE="make --file Makefile.eor $1 > /tmp/eor-$$-TEXTFILE.txt 2>&1"
+CMDLINE_BEFORE="${CMDLINE_TEMPLATE/TEXTFILE/before}"
+CMDLINE_AFTER="${CMDLINE_TEMPLATE/TEXTFILE/after}"
+# echo $CMDLINE_BEFORE
+# echo $CMDLINE_AFTER
+# echo $PATTERN
+# exit 1
+eval $CMDLINE_BEFORE
 echo "Output of make:"
 
 cat /tmp/eor-$$-before.txt
-read -p "Continue? " -n 1 -r
+read -p "continue? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     cp /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt
-    
-    (sleep 1 && find -L . | entr sh -c "make $* > /tmp/eor-$$-after.txt 2>&1") &
+
+    (sleep 1 && find -L | grep $PATTERN | entr bash -c "$CMDLINE_AFTER") &
     # shellcheck disable=SC2068
+    soojs
     watch ${WATCH_OPTS[@]} --color "diff /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt --unified | colordiff"
     kill -TERM %1
 fi
