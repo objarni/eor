@@ -10,3 +10,6 @@ KNOWN ISSUES
 * not possible to express complex patterns for grep/entr
 * cannot see how many files are scanned on boot
 * entr will not detect new files matching pattern
+* the pattern is really part of the target mentally, but not
+  in current implementation
+  - bash magic parsing of Makefile.eor / convention in Makefile?
