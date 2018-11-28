@@ -4,6 +4,8 @@ if [ "$PATTERN" = "" ]; then
   PATTERN="."
 fi
 
+RED='\033[1;31m'
+GREEN='\033[1;32m'
 LIGHTBLUE='\033[1;34m'
 BACK='\033[0m'
 SPLASH="""
@@ -47,6 +49,15 @@ printf "${BACK}"
 NC='\033[0m' # No Color
 
 : "${WATCH_OPTS:=""}"
+
+MATCHES=`find -L | grep $PATTERN | wc -l`
+if [ "$MATCHES" = "0" ]; then
+  printf "${RED}"
+else
+  printf "${GREEN}"
+fi 
+echo "Number of files matching pattern: $MATCHES"
+printf "${BACK}"
 
 echo "Running make..."
 
