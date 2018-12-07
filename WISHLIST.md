@@ -1,5 +1,5 @@
-KNOWN ISSUES
-============
+WISHLIST
+========
 
 * 2>&1 is not deterministic
 * after.txt and before.txt cmd.line execution is not exactly the
