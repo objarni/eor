@@ -80,7 +80,9 @@ then
 
     (sleep 1 && find -L | grep $PATTERN | entr bash -c "$CMDLINE_AFTER") &
     # shellcheck disable=SC2068
-    soojs
-    watch ${WATCH_OPTS[@]} --color "diff /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt --unified | colordiff"
+
+    watch ${WATCH_OPTS[@]} --color \
+      "diff /tmp/eor-$$-before.txt /tmp/eor-$$-after.txt --unified | colordiff | sed s/line/###LINE###/"
+
     kill -TERM %1
 fi
